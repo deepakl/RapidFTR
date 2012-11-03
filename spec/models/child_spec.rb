@@ -723,7 +723,7 @@ describe Child do
     end
 
     it "should update history with 'from' value on last_known_location update" do
-      child = Child.create('last_known_location' => 'New York', 'photo' => uploadable_photo)
+      child = Child.create('last_known_location' => 'New York', 'photo' => mock_photo)
       child['last_known_location'] = 'Philadelphia'
       child.save!
       changes = child['histories'].first['changes']
@@ -731,7 +731,7 @@ describe Child do
     end
 
     it "should update history with 'to' value on last_known_location update" do
-      child = Child.create('last_known_location' => 'New York', 'photo' => uploadable_photo)
+      child = Child.create('last_known_location' => 'New York', 'photo' => mock_photo)
       child['last_known_location'] = 'Philadelphia'
       child.save!
       changes = child['histories'].first['changes']
@@ -739,7 +739,7 @@ describe Child do
     end
 
     it "should update history with 'from' value on age update" do
-      child = Child.create('age' => '8', 'last_known_location' => 'New York', 'photo' => uploadable_photo)
+      child = Child.create('age' => '8', 'last_known_location' => 'New York', 'photo' => mock_photo)
       child['age'] = '6'
       child.save!
       changes = child['histories'].first['changes']
@@ -747,7 +747,7 @@ describe Child do
     end
 
     it "should update history with 'to' value on age update" do
-      child = Child.create('age' => '8', 'last_known_location' => 'New York', 'photo' => uploadable_photo)
+      child = Child.create('age' => '8', 'last_known_location' => 'New York', 'photo' => mock_photo)
       child['age'] = '6'
       child.save!
       changes = child['histories'].first['changes']
@@ -755,7 +755,7 @@ describe Child do
     end
 
     it "should update history with a combined history record when multiple fields are updated" do
-      child = Child.create('age' => '8', 'last_known_location' => 'New York', 'photo' => uploadable_photo)
+      child = Child.create('age' => '8', 'last_known_location' => 'New York', 'photo' => mock_photo)
       child['age'] = '6'
       child['last_known_location'] = 'Philadelphia'
       child.save!
@@ -768,21 +768,21 @@ describe Child do
     end
 
     it "should not record anything in the history if a save occured with no changes" do
-      child = Child.create('photo' => uploadable_photo, 'last_known_location' => 'New York')
+      child = Child.create('photo' => mock_photo, 'last_known_location' => 'New York')
       loaded_child = Child.get(child.id)
       loaded_child.save!
       loaded_child['histories'].should be_empty
     end
 
     it "should not record empty string in the history if only change was spaces" do
-      child = Child.create('origin' => '', 'photo' => uploadable_photo, 'last_known_location' => 'New York')
+      child = Child.create('origin' => '', 'photo' => mock_photo, 'last_known_location' => 'New York')
       child['origin'] = '    '
       child.save!
       child['histories'].should be_empty
     end
 
     it "should not record history on populated field if only change was spaces" do
-      child = Child.create('last_known_location' => 'New York', 'photo' => uploadable_photo)
+      child = Child.create('last_known_location' => 'New York', 'photo' => mock_photo)
       child['last_known_location'] = ' New York   '
       child.save!
       child['histories'].should be_empty
@@ -790,7 +790,7 @@ describe Child do
 
     it "should record history for newly populated field that previously was null" do
       # gender is the only field right now that is allowed to be nil when creating child document
-      child = Child.create('gender' => nil, 'last_known_location' => 'London', 'photo' => uploadable_photo)
+      child = Child.create('gender' => nil, 'last_known_location' => 'London', 'photo' => mock_photo)
       child['gender'] = 'Male'
       child.save!
       child['histories'].first['changes']['gender']['from'].should be_nil
@@ -798,7 +798,7 @@ describe Child do
     end
 
     it "should apend latest history to the front of histories" do
-      child = Child.create('last_known_location' => 'London', 'photo' => uploadable_photo)
+      child = Child.create('last_known_location' => 'London', 'photo' => mock_photo)
       child['last_known_location'] = 'New York'
       child.save!
       child['last_known_location'] = 'Philadelphia'
@@ -809,7 +809,7 @@ describe Child do
     end
 
     it "should update history with username from last_updated_by" do
-      child = Child.create('photo' => uploadable_photo, 'last_known_location' => 'London')
+      child = Child.create('photo' => mock_photo, 'last_known_location' => 'London')
       child['last_known_location'] = 'Philadelphia'
       child['last_updated_by'] = 'some_user'
       child.save!
@@ -817,7 +817,7 @@ describe Child do
     end
 
     it "should update history with the datetime from last_updated_at" do
-      child = Child.create('photo' => uploadable_photo, 'last_known_location' => 'London')
+      child = Child.create('photo' => mock_photo, 'last_known_location' => 'London')
       child['last_known_location'] = 'Philadelphia'
       child['last_updated_at'] = '2010-01-14 14:05:00UTC'
       child.save!
@@ -828,12 +828,12 @@ describe Child do
 
       before :each do
         Clock.stub!(:now).and_return(Time.parse("Jan 20 2010 12:04:24"))
-        @child = Child.create('photo' => uploadable_photo, 'last_known_location' => 'London')
+        @child = Child.create('photo' => mock_photo, 'last_known_location' => 'London')
         Clock.stub!(:now).and_return(Time.parse("Feb 20 2010 12:04:24"))
       end
 
       it "should log new photo key on adding a photo" do
-        @child.photo = uploadable_photo_jeff
+        @child.photo = mock_photo
         @child.save
         changes = @child['histories'].first['changes']
         #TODO: this should be instead child.photo_history.first.to or something like that
@@ -841,7 +841,7 @@ describe Child do
       end
 
       it "should log multiple photos being added" do
-        @child.photos = [uploadable_photo_jeff, uploadable_photo_jorge]
+        @child.photos = [mock_photo, mock_photo]
         @child.save
         changes = @child['histories'].first['changes']
         changes['photo_keys']['added'].should have(2).photo_keys
@@ -849,7 +849,7 @@ describe Child do
       end
 
       it "should log a photo being deleted" do
-        @child.photos = [uploadable_photo_jeff, uploadable_photo_jorge]
+        @child.photos = [mock_photo, mock_photo]
         @child.save
         @child.delete_photo(@child.photos.first.name)
         @child.save
@@ -859,7 +859,7 @@ describe Child do
       end
 
       it "should select a new primary photo if the current one is deleted" do
-        @child.photos = [uploadable_photo_jeff]
+        @child.photos = [mock_photo]
         @child.save
         original_primary_photo_key = @child.photos[0].name
         jeff_photo_key = @child.photos[1].name
@@ -879,7 +879,7 @@ describe Child do
     end
 
     it "should maintain history when child is flagged and message is added" do
-      child = Child.create('photo' => uploadable_photo, 'last_known_location' => 'London')
+      child = Child.create('photo' => mock_photo, 'last_known_location' => 'London')
       child['flag'] = 'true'
       child['flag_message'] = 'Duplicate record!'
       child.save!
@@ -892,7 +892,7 @@ describe Child do
     end
 
     it "should maintain history when child is reunited and message is added" do
-      child = Child.create('photo' => uploadable_photo, 'last_known_location' => 'London')
+      child = Child.create('photo' => mock_photo, 'last_known_location' => 'London')
       child['reunited'] = 'true'
       child['reunited_message'] = 'Finally home!'
       child.save!
