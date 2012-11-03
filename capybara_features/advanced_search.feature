@@ -2,7 +2,6 @@ Feature: So that I can find a child that has been entered in to RapidFTR
   As a user of the website
   I want to use the advanced search to find all relevant results
 
-  @javascript
   Scenario: Search Criteria - Check presence of required form elements
   Given I am logged in
     And I am on child advanced search page
@@ -41,7 +40,6 @@ Feature: So that I can find a child that has been entered in to RapidFTR
    Then I should see "Will" in the search results
     And I should see "Willis" in the search results
 
-  @javascript
   Scenario: Search Filters - Created By - Check presence of required form elements
    Given I am logged in
      And I am on child advanced search page
@@ -56,7 +54,6 @@ Feature: So that I can find a child that has been entered in to RapidFTR
      And I press "Search"
     Then I should see "Please enter a valid 'Created by' value"
 
-  @javascript
   Scenario: 'Created By' can only be entered if checkbox selected
    Given I am logged in
      And I am on child advanced search page

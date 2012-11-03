@@ -10,7 +10,6 @@ Feature:
       | name   |
       | Peter  |
 
-  @javascript
   Scenario: Flagging a child record
     When I flag "Peter" as suspect with the following reason:
       """
