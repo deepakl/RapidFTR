@@ -1,6 +1,5 @@
 require 'spec_helper'
 
-
 describe Child do
 
   describe 'build solar schema' do
@@ -316,15 +315,15 @@ describe Child do
     end
 
     it "should disallow a photo larger than 10 megabytes" do
-      photo = uploadable_large_photo
       child = Child.new
-      child.photo = photo
+      child.photo = mock_photo(12.megabytes)
       child.should_not be_valid
+      child.errors.full_messages.should include("File is too large")
     end
 
     it "should disllow an audio file larger than 10 megabytes" do
       child = Child.new
-      child.audio = uploadable_large_audio
+      child.audio = mock_audio(13.megabytes)
       child.should_not be_valid
     end
 
@@ -407,15 +406,14 @@ describe Child do
     end
 
     it "should not save with a photo larger than 10 megabytes" do
-      photo = uploadable_large_photo
       child = Child.new
-      child.photo = photo
+      child.photo = mock_photo(13.megabytes)
       child.save.should == false
     end
 
     it "should not save with an audio file larger than 10 megabytes" do
       child = Child.new
-      child.audio = uploadable_large_audio
+      child.audio = mock_audio(13.megabytes)
       child.save.should == false
     end
 
@@ -941,7 +939,7 @@ describe Child do
       end
 
       it "should select a new primary photo if the current one is deleted" do
-        @child.photos = [uploadable_photo_jeff]
+        @child.photos = [mock_photo]
         @child.save
         original_primary_photo_key = @child.photos[0].name
         jeff_photo_key = @child.photos[1].name
@@ -1010,17 +1008,17 @@ describe Child do
 
     it "should return list of children ordered by name" do
       UUIDTools::UUID.stub("random_create").and_return(12345)
-      Child.create('photo' => uploadable_photo, 'name' => 'Zbu', 'last_known_location' => 'POA')
-      Child.create('photo' => uploadable_photo, 'name' => 'Abu', 'last_known_location' => 'POA')
+      Child.create('photo' => mock_photo, 'name' => 'Zbu', 'last_known_location' => 'POA')
+      Child.create('photo' => mock_photo, 'name' => 'Abu', 'last_known_location' => 'POA')
       childrens = Child.all
       childrens.first['name'].should == 'Abu'
     end
 
     it "should order children with blank names first" do
       UUIDTools::UUID.stub("random_create").and_return(12345)
-      Child.create('photo' => uploadable_photo, 'name' => 'Zbu', 'last_known_location' => 'POA')
-      Child.create('photo' => uploadable_photo, 'name' => 'Abu', 'last_known_location' => 'POA')
-      Child.create('photo' => uploadable_photo, 'name' => '', 'last_known_location' => 'POA')
+      Child.create('photo' => mock_photo, 'name' => 'Zbu', 'last_known_location' => 'POA')
+      Child.create('photo' => mock_photo, 'name' => 'Abu', 'last_known_location' => 'POA')
+      Child.create('photo' => mock_photo, 'name' => '', 'last_known_location' => 'POA')
       childrens = Child.all
       childrens.first['name'].should == ''
       childrens.size.should == 3

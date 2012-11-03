@@ -1,5 +1,13 @@
 module UploadableFiles
 
+  def mock_photo size=3.megabytes
+    mock(:content_type => "image/jpeg", :size => size, :path => "/fake/path", :read => "foo.bar", :name => "foo.bar")
+  end
+
+  def mock_audio size=3.megabytes
+    mock(:content_type => "audio/ogg", :size => size, :path => "/fake/path", :read => "foo.bar", :original_filename => "/fake/original")
+  end
+
   def uploadable_photo( photo_path = "features/resources/jorge.jpg" )
     photo = File.new(photo_path)
 
