@@ -1,7 +1,7 @@
 module UploadableFiles
 
   def mock_photo size=3.megabytes
-    mock(:content_type => "image/jpeg", :size => size, :path => "/fake/path", :read => "foo.bar", :name => "foo.bar")
+    mock(:content_type => "image/jpeg", :size => size, :path => "/fake/path/#{rand(100)}", :read => "foo.bar", :name => "foobar#{rand(100)}.jpg")
   end
 
   def mock_audio size=3.megabytes

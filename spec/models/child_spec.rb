@@ -178,7 +178,7 @@ describe Child do
     it "should update attachment when there is audio update" do
       Clock.stub!(:now).and_return(Time.parse("Jan 17 2010 14:05:32"))
       child = Child.new
-      child.update_properties_with_user_name "jdoe", nil, nil, uploadable_audio, {}
+      child.update_properties_with_user_name "jdoe", nil, nil, mock_audio, {}
       child['_attachments']['audio-2010-01-17T140532']['data'].should_not be_blank
     end
 
@@ -908,12 +908,12 @@ describe Child do
 
       before :each do
         Clock.stub!(:now).and_return(Time.parse("Jan 20 2010 12:04:24"))
-        @child = Child.create('photo' => uploadable_photo, 'last_known_location' => 'London')
+        @child = Child.create('photo' => mock_photo, 'last_known_location' => 'London')
         Clock.stub!(:now).and_return(Time.parse("Feb 20 2010 12:04:24"))
       end
 
       it "should log new photo key on adding a photo" do
-        @child.photo = uploadable_photo_jeff
+        @child.photo = mock_photo
         @child.save
         changes = @child['histories'].first['changes']
         #TODO: this should be instead child.photo_history.first.to or something like that
@@ -921,7 +921,7 @@ describe Child do
       end
 
       it "should log multiple photos being added" do
-        @child.photos = [uploadable_photo_jeff, uploadable_photo_jorge]
+        @child.photos = [mock_photo, mock_photo]
         @child.save
         changes = @child['histories'].first['changes']
         changes['photo_keys']['added'].should have(2).photo_keys
@@ -929,7 +929,7 @@ describe Child do
       end
 
       it "should log a photo being deleted" do
-        @child.photos = [uploadable_photo_jeff, uploadable_photo_jorge]
+        @child.photos = [mock_photo, mock_photo]
         @child.save
         @child.delete_photo(@child.photos.first.name)
         @child.save
@@ -1048,11 +1048,9 @@ describe Child do
   describe "primary_photo =" do
 
     before :each do
-      @photo1 = uploadable_photo("features/resources/jorge.jpg")
-      @photo2 = uploadable_photo("features/resources/jeff.png")
       @child = Child.new("name" => "Tom")
-      @child.photo= {0 => @photo1, 1 => @photo2}
-      @child.save
+      @child.photos = [ mock_photo, mock_photo ]
+      @child.save!
     end
 
     it "should update the primary photo selection" do
