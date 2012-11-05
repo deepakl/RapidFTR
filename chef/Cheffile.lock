@@ -1,0 +1,8 @@
+SITE
+  remote: http://community.opscode.com/api/v1
+  specs:
+    ruby (0.9.0)
+
+DEPENDENCIES
+  ruby (>= 0)
+
